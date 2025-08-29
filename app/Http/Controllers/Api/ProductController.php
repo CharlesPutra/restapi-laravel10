@@ -13,6 +13,7 @@ class ProductController extends Controller
      */
     public function index()
     {
+        //nampilkan `semua data api
         return response()->json(Product::all());
     }
 
@@ -21,6 +22,7 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
+        //store api
         $request->validate([
             'name' => 'required',
             'description' => 'required',
@@ -36,7 +38,8 @@ class ProductController extends Controller
      */
     public function show(string $id)
     {
-        //
+        //lihat data dari id atau show data api
+        return response()->json(Product::findOrFail($id));
     }
 
     /**
@@ -44,6 +47,7 @@ class ProductController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        //update api
         $product = Product::findOrFail($id);
         $product->update($request->all());
         return response()->json($product);
@@ -54,6 +58,7 @@ class ProductController extends Controller
      */
     public function destroy(string $id)
     {
+        //delete atau destroy api
         Product::destroy($id);
         return response()->json(null, 204);
     }
