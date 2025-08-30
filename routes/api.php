@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\HomeController;
 use App\Http\Controllers\Api\ProductController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -21,7 +22,9 @@ Route::post('/register', [AuthController::class, 'register']);
 //route login api
 Route::post('/login', [AuthController::class, 'login']);
 
-Route::get('/ind', [AuthController::class, 'index']);
+//route halaman home atau halaman guest dan show data untuk halaman home atau guest
+Route::get('home', [HomeController::class, 'index']);
+Route::get('home/{id}', [HomeController::class, 'show']);
 
 
 //route auth atau yang sudah login api

@@ -9,10 +9,6 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-    //coba nampilin semua data user
-    public function index() {
-        return response()->json(User::all());
-    }
     //Register api
     public function register(Request $request) {
         //validasi
