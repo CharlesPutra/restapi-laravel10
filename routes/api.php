@@ -23,14 +23,14 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
 //route halaman home atau halaman guest dan show data untuk halaman home atau guest
-Route::get('home', [HomeController::class, 'index']);
-Route::get('home/{id}', [HomeController::class, 'show']);
+Route::get('/home', [HomeController::class, 'index']);
+Route::get('/home/{id}', [HomeController::class, 'show']);
 
 
 //route auth atau yang sudah login api
 Route::middleware('auth:sanctum')->group(function () {
     //route product api
-    Route::apiResource('products', ProductController::class);
+    Route::apiResource('/products', ProductController::class);
     //route logout api
     Route::post('/logout', [ AuthController::class, 'logout']);
 });
