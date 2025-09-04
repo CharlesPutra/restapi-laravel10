@@ -15,17 +15,19 @@ class ProductController extends Controller
     public function index()
     {
         //nampilkan `semua data api
-        return response()->json(Product::all());
+        $data = Product::with('category')->get();
+        return response()->json($data, 201);
     }
 
     /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-    {
+    {   
         //store api
         $request->validate([
             'name' => 'required',
+            'category_id' => 'nullable|exists:categories,id',
             'description' => 'required',
             'price' => 'required|numeric',
             'file' => 'nullable|file|mimes:png,jpg,jpeg,mp4,mov|max:20480'
@@ -38,6 +40,7 @@ class ProductController extends Controller
 
         $product = Product::create([
             'name' => $request->name,
+            'category_id' => $request->category_id,
             'description' => $request->description,
             'price' => $request->price,
             'file' => $path
@@ -63,6 +66,7 @@ class ProductController extends Controller
         $product = Product::findOrFail($id);
          $request->validate([
             'name' => 'required',
+            'category_id' => 'nullable|exists:categories,id',
             'description' => 'required',
             'price' => 'required|numeric',
             'file' => 'nullable|file|mimes:png,jpg,jpeg,mp4,mov|max:20480'
@@ -75,7 +79,7 @@ class ProductController extends Controller
             //menyimpan file baru
             $product->file = $request->file('file')->store('uploads', 'public');
         }
-        $product->update($request->only('name','description','price'));
+        $product->update($request->only('name', 'category_id','description','price'));
         return response()->json($product);
     }
 
@@ -92,6 +96,6 @@ class ProductController extends Controller
         //delete atau destroy api
         $product->delete();
         
-        return response()->json(null, 204);
+        return response()->json('data telah di hapus', 200);
     }
 }

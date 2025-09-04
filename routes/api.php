@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\HomeController;
 use App\Http\Controllers\Api\ProductController;
 use Illuminate\Http\Request;
@@ -31,6 +32,8 @@ Route::get('/home/{id}', [HomeController::class, 'show']);
 Route::middleware('auth:sanctum')->group(function () {
     //route product api
     Route::apiResource('/products', ProductController::class);
+    //route category api
+    Route::apiResource('/category', CategoryController::class);
     //route logout api
     Route::post('/logout', [ AuthController::class, 'logout']);
 });
