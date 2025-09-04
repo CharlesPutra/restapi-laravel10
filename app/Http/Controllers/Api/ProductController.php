@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
@@ -27,9 +28,20 @@ class ProductController extends Controller
             'name' => 'required',
             'description' => 'required',
             'price' => 'required|numeric',
+            'file' => 'nullable|file|mimes:png,jpg,jpeg,mp4,mov|max:20480'
         ]);
+        //menyimpan file
+        $path = null;
+        if ($request->hasFile('file')) {
+            $path = $request->file('file')->store('uploads', 'public');
+        }
 
-        $product = Product::create($request->all());
+        $product = Product::create([
+            'name' => $request->name,
+            'description' => $request->description,
+            'price' => $request->price,
+            'file' => $path
+        ]);
         return response()->json($product, 201);
     }
 
@@ -49,7 +61,21 @@ class ProductController extends Controller
     {
         //update api
         $product = Product::findOrFail($id);
-        $product->update($request->all());
+         $request->validate([
+            'name' => 'required',
+            'description' => 'required',
+            'price' => 'required|numeric',
+            'file' => 'nullable|file|mimes:png,jpg,jpeg,mp4,mov|max:20480'
+        ]);
+        //hapus file sebelumnya
+        if ($request->hasFile('file')) {
+            if ($product->file && Storage::disk('public')->exists($product->file)) {
+                Storage::disk('public')->delete($product->file);
+            };
+            //menyimpan file baru
+            $product->file = $request->file('file')->store('uploads', 'public');
+        }
+        $product->update($request->only('name','description','price'));
         return response()->json($product);
     }
 
@@ -58,8 +84,14 @@ class ProductController extends Controller
      */
     public function destroy(string $id)
     {
+        $product = Product::findOrFail($id);
+        //hapus file
+        if ($product->file && Storage::disk('public')->exists($product->file)) {
+            Storage::disk('public')->delete($product->file);
+        }
         //delete atau destroy api
-        Product::destroy($id);
+        $product->delete();
+        
         return response()->json(null, 204);
     }
 }
